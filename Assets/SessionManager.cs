@@ -25,6 +25,9 @@ public class SessionManager : MonoBehaviour
     bool playerOneHasAmmo = false;
     bool playerTwoHasAmmo = false;
 
+    public AudioClip reloadSound;
+    public AudioClip shootSound;
+
     void Start()
     {
         playerOneLivesText.text = "Player 1 Lives: " + playerOneLives.ToString();
@@ -72,18 +75,21 @@ public class SessionManager : MonoBehaviour
         {
             playerTwoAmmo ++;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(reloadSound, Camera.main.transform.position);
             return "Player 2 reloads";
         }
         else if(playerSelection == 1 && computerSelection == 3 && playerTwoHasAmmo)
         {
             playerTwoAmmo --;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 1 blocks the shot!";
         }
         else if(playerSelection == 2 && computerSelection == 1)
         {
             playerOneAmmo ++;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(reloadSound, Camera.main.transform.position);
             return "Player 1 reloads!";
         }
         else if(playerSelection == 2 && computerSelection == 2)
@@ -91,6 +97,7 @@ public class SessionManager : MonoBehaviour
             playerOneAmmo ++;
             playerTwoAmmo ++;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(reloadSound, Camera.main.transform.position);
             return "Both players reload!";
         }
         else if(playerSelection == 2 && computerSelection == 3 && playerTwoHasAmmo)
@@ -98,12 +105,14 @@ public class SessionManager : MonoBehaviour
             playerOneLives --;
             playerTwoAmmo --;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 1 is shot!";
         }
         else if(playerSelection == 3 && computerSelection == 1 && playerOneHasAmmo)
         {
             playerOneAmmo --;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 2 blocks!";
         }
         else if(playerSelection == 3 && computerSelection == 2 && playerOneHasAmmo)
@@ -111,6 +120,7 @@ public class SessionManager : MonoBehaviour
             playerTwoLives --;
             playerOneAmmo --;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 2 is shot!";
         }
         else if(playerSelection == 3 && computerSelection == 3 && playerOneHasAmmo)
@@ -118,6 +128,7 @@ public class SessionManager : MonoBehaviour
             playerOneAmmo --;
             playerTwoAmmo --;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Both players shoot!";
         }
         // below is for if they shoot with no ammo
@@ -129,6 +140,7 @@ public class SessionManager : MonoBehaviour
         {
             playerOneAmmo ++;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(reloadSound, Camera.main.transform.position);
             return "Player 1 reloads, player two has no ammo!";
         }
         else if(playerSelection == 3 && computerSelection == 1 && !playerOneHasAmmo)
@@ -139,6 +151,7 @@ public class SessionManager : MonoBehaviour
         {
             playerTwoAmmo ++;
             updateNumbers();
+            AudioSource.PlayClipAtPoint(reloadSound, Camera.main.transform.position);
             return "Player 2 reloads, player 1 has no ammo!";
         }
         else if(playerSelection == 3 && computerSelection == 3 && !playerOneHasAmmo && !playerTwoHasAmmo)
@@ -147,10 +160,12 @@ public class SessionManager : MonoBehaviour
         }
         else if(playerSelection == 3 && computerSelection == 3 && !playerOneHasAmmo && playerTwoHasAmmo)
         {
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 1 is shot! And has no ammo!";
         }
         else if(playerSelection == 3 && computerSelection == 3 && playerOneHasAmmo && !playerTwoHasAmmo)
         {
+            AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 2 is shot! And has no ammo!";
         }
         else
