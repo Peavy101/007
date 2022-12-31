@@ -18,23 +18,27 @@ public class SessionManager : MonoBehaviour
     public TextMeshProUGUI playerOneAmmoText;
     public TextMeshProUGUI playerTwoLivesText;
     public TextMeshProUGUI playerTwoAmmoText;
-    public Button blockbutton;
+    public Button blockButton;
     public Button reloadButton;
     public Button shootButton;
+    public Button replayButton;
 
     bool playerOneHasAmmo = false;
     bool playerTwoHasAmmo = false;
+    bool playerOneIsAlive = true;
+    bool playerTwoIsAlive = true;
 
     public AudioClip reloadSound;
     public AudioClip shootSound;
 
     void Start()
     {
+        replayButton.gameObject.SetActive(false);
         playerOneLivesText.text = "Player 1 Lives: " + playerOneLives.ToString();
         playerOneAmmoText.text = "Player 1 Ammo: " + playerOneAmmo.ToString();
         playerTwoLivesText.text = "Player 2 Lives: " + playerTwoLives.ToString();
         playerTwoAmmoText.text = "Player 2 Ammo: " + playerTwoAmmo.ToString();
-        blockbutton.onClick.AddListener(Block);
+        blockButton.onClick.AddListener(Block);
         reloadButton.onClick.AddListener(Reload);
         shootButton.onClick.AddListener(Shoot);
     }
@@ -44,6 +48,10 @@ public class SessionManager : MonoBehaviour
     {
         playerOneHasAmmoCheck();
         playerTwoHasAmmoCheck();
+        playerOneIsAliveCheck();
+        playerTwoIsAliveCheck();
+        GameOver();
+
     }
 
     void Block()
@@ -123,7 +131,7 @@ public class SessionManager : MonoBehaviour
             AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 2 is shot!";
         }
-        else if(playerSelection == 3 && computerSelection == 3 && playerOneHasAmmo)
+        else if(playerSelection == 3 && computerSelection == 3 && playerOneHasAmmo && playerTwoHasAmmo)
         {
             playerOneAmmo --;
             playerTwoAmmo --;
@@ -160,11 +168,13 @@ public class SessionManager : MonoBehaviour
         }
         else if(playerSelection == 3 && computerSelection == 3 && !playerOneHasAmmo && playerTwoHasAmmo)
         {
+            playerOneLives --;
             AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 1 is shot! And has no ammo!";
         }
         else if(playerSelection == 3 && computerSelection == 3 && playerOneHasAmmo && !playerTwoHasAmmo)
         {
+            playerTwoLives --;
             AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position);
             return "Player 2 is shot! And has no ammo!";
         }
@@ -206,6 +216,65 @@ public class SessionManager : MonoBehaviour
         {
             playerTwoHasAmmo = false;
         }
+    }
+
+    void playerOneIsAliveCheck()
+    {
+        if(playerOneLives > 0)
+        {
+            playerOneIsAlive = true;
+        }
+        else if(playerOneLives == 0)
+        {
+            playerOneIsAlive = false;
+        }
+    }
+    void playerTwoIsAliveCheck()
+    {
+        if(playerTwoLives > 0)
+        {
+            playerTwoIsAlive = true;
+        }
+        else if(playerTwoLives == 0)
+        {
+            playerTwoIsAlive = false;
+        }
+    }
+
+    void GameOver()
+    {
+        if(!playerOneIsAlive)
+        {
+            replayButton.gameObject.SetActive(true);
+            replayButton.onClick.AddListener(Replay);
+            resultText.text = "PLAYER 1 IS DEAD, PLAYER 2 WINS!";
+            blockButton.enabled = false;
+            reloadButton.enabled = false;
+            shootButton.enabled = false;
+
+        }
+        else if(!playerTwoIsAlive)
+        {
+            replayButton.gameObject.SetActive(true);
+            replayButton.onClick.AddListener(Replay);
+            resultText.text = "PLAYER 2 IS DEAD, PLAYER 1 WINS!";
+            blockButton.enabled = false;
+            reloadButton.enabled = false;
+            shootButton.enabled = false;
+        }
+    }
+
+    void Replay()
+    {
+        resultText.text = "";
+        replayButton.gameObject.SetActive(false);
+        playerOneLives = 3;
+        playerTwoLives = 3;
+        playerOneAmmo = 0;
+        playerTwoAmmo = 0;
+        blockButton.enabled = true;
+        reloadButton.enabled = true;
+        shootButton.enabled = true;
     }
 
 }
